@@ -1,0 +1,14 @@
+{
+  "name": "via-script",
+  "version": "0.0.0",
+  "description": "A library for storing and manipulating time series data.",
+  "main": "./index.js",
+  "scripts": {},
+  "repository": "https://github.com/via-platform/via-script",
+  "keywords": [
+    "via",
+    "script"
+  ],
+  "author": "Via Systems, LLC",
+  "homepage": "https://via.world"
+}
