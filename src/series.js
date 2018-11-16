@@ -32,6 +32,10 @@ module.exports = class Series extends Array {
 
     }
 
+    filter(fn){
+        return super.filter(([k, v], index) => fn(v, index));
+    }
+
     map(fn){
         return super.map(([k, o], index) => ([k, fn(o, index)]));
     }
@@ -49,11 +53,11 @@ module.exports = class Series extends Array {
     }
 
     before(index, offset = 1){
-        return this.get[index - offset];
+        return this.get(index - offset);
     }
 
     after(index, offset = 1){
-        return this.get[index + offset];
+        return this.get(index + offset);
     }
 
     get(index){
@@ -122,5 +126,27 @@ module.exports = class Series extends Array {
 
     each(callback){
         this.forEach(([k, v], index, series) => callback(v, index, series));
+    }
+
+    linreg(){
+        if(this.length < 2){
+            return () => this.length ? this.get(0) : 0;
+        }
+
+        const total = {x: 0, y: 0, xy: 0, xx: 0};
+
+        for(let i = 0; i < this.length; i++){
+            const v = this.get(i);
+
+            total.x += i;
+            total.y += v;
+            total.xy += i * v;
+            total.xx += i * i;
+        }
+
+        const slope = ((this.length * total.xy - total.x * total.y) / (this.length * total.xx - total.x * total.x));
+        const intercept = (total.y - slope * total.x) / this.length;
+
+        return index => slope * index + intercept;
     }
 }

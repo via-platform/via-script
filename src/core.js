@@ -29,11 +29,19 @@ function is_nan(x){
 }
 
 function merge(a, b, fn){
-    return a.map((value, index) => fn(value, b.get(index)));
+    return a.map((value, index) => fn(value, b.get(index), index));
 }
 
 function iff(series, affirmative, negative){
-    return a.map(value => value ? affirmative : negative);
+    return series.map((value, index) => {
+        const result = value ? affirmative : negative;
+
+        if(is_series(result)){
+            return result.get(index);
+        }else{
+            return result;
+        }
+    });
 }
 
 function offset(series, length){
@@ -48,6 +56,10 @@ function nz(series, replacement = 0){
     return series.map(value => is_nan(value) ? replacement : value);
 }
 
+function trim(series){
+    return series.filter(value => !is_nan(value));
+}
+
 module.exports = {
     is_function,
     is_number,
@@ -60,5 +72,6 @@ module.exports = {
     iff,
     offset,
     map,
-    nz
+    nz,
+    trim
 };

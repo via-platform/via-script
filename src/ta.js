@@ -1,6 +1,6 @@
-const {map, nz} = require('./core');
+const {map, nz, merge} = require('./core');
 const {prop} = require('./properties');
-const {min, max, sign, subtract, multiply, divide, mean, abs} = require('./math');
+const {min, max, sign, subtract, multiply, divide, mean, abs, total, pow, sqrt} = require('./math');
 
 function change(series, length = 1){
     return series.map((value, index) => (index - length > 0) ? value - series.get(index - length) : 0);
@@ -112,10 +112,17 @@ function correlation(){
 
 function cross(a, b){
     //Returns a new series of booleans, true if the series have crossed, false if not
-    const signs = sign(subtract());
+    return merge(a, b, (x, y, index) => {
+        if(x === y){
+            return true;
+        }else if(index){
+            const previous_x = a.before(index);
+            const previous_y = b.before(index);
 
-    return a.map((value, index) => {
-
+            return (x > y && previous_x < previous_y || x < y && previous_x > previous_y);
+        }else{
+            return false;
+        }
     });
 }
 
@@ -183,8 +190,8 @@ function lowest_bars(series, length){
     });
 }
 
-function linreg(series, length, offset){
-
+function linreg(series, length){
+    return series.map((value, index) => series.preceding(index, length).linreg()(Math.min(length, index + 1) - 1));
 }
 
 function momentum(series, length = 1){
@@ -252,7 +259,7 @@ function sar(series, acceleration, acceleration_increment, max_acceleration){
 }
 
 function deviation(series, length){
-    return abs(subtract(series, sma(series, length)));
+    return sqrt(variance(series, length));
 }
 
 function stochastic(series, length){
@@ -274,8 +281,8 @@ function when(condition, series, value){
 function variance(series, length){
     return series.map((value, index) => {
         const preceding = series.preceding(index, length);
-        const average = mean(preceding);
-        const difference = subtract(preceding, average);
+        const difference = total(pow(subtract(preceding, mean(preceding)), 2));
+        return difference / preceding.length;
     });
 }
 
@@ -283,8 +290,9 @@ function vwap(series){
     return prop(series, 'vwap');
 }
 
-function vwma(series, length){
-
+function vwma(series, property, length){
+    const volume = prop(series, 'volume_traded');
+    return divide(sma(multiply(prop(series, property), volume), length), sma(volume, length));
 }
 
 function swma(series){
