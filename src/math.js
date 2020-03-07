@@ -129,7 +129,7 @@ function sum(series, length){
     return series.map((value, index) => total(series.preceding(index, length)));
 }
 
-module.exports = {
+export {
     add,
     subtract,
     multiply,

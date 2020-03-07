@@ -40,7 +40,7 @@ function year(series){
     return format_time(series, 'YYYY');
 }
 
-module.exports = {
+export {
     time,
     format_time,
     day_of_month,

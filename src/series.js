@@ -1,4 +1,18 @@
-module.exports = class Series extends Array {
+export class Series extends Array {
+    static from(data, fn){
+        const series = new Series();
+
+        for(const datum of data){
+            if(!datum.date){
+                throw new Error('All data must have a corresponding `date` value.');
+            }
+
+            series.set(new Date(datum.date), fn ? fn(datum) : datum);
+        }
+
+        return series;
+    }
+
     set(key, value){
         //I could use a more clever search algorithm to insert items into the set.
         //However, we have one huge advantage: We know that the vast majority of the time

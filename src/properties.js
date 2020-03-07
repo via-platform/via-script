@@ -40,7 +40,7 @@ function permute(series, keys){
     return series.permute(keys);
 }
 
-module.exports = {
+export {
     prop,
     open,
     close,

@@ -324,7 +324,7 @@ function wma(series, length){
     });
 }
 
-module.exports = {
+export {
     adl,
     change,
     rma,

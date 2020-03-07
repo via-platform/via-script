@@ -60,7 +60,7 @@ function trim(series){
     return series.filter(value => !is_nan(value));
 }
 
-module.exports = {
+export {
     is_function,
     is_number,
     is_series,
